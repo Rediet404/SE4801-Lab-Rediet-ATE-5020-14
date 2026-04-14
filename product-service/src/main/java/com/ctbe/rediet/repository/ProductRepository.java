@@ -9,4 +9,5 @@ import com.ctbe.rediet.model.Product;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 // Spring Data automatically generates the SQL for this method:
 List<Product> findByNameContainingIgnoreCase(String keyword);
+List<Product> findByCategory(String category);
 }
