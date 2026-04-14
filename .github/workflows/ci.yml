@@ -9,6 +9,12 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    defaults:
+      run:
+        working-directory: product-service
 
     steps:
       - name: Checkout source code
@@ -22,18 +28,18 @@ jobs:
           cache: maven
 
       - name: Build, verify, and run all tests
-        run: mvn verify
+        run: ./mvnw -B verify
 
       - name: Upload Surefire test reports
-        if: always()
+        if: ${{ always() && hashFiles('product-service/target/surefire-reports/**') != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: surefire-reports
-          path: target/surefire-reports/
+          path: product-service/target/surefire-reports/
 
       - name: Upload JaCoCo coverage report (optional)
-        if: always()
+        if: ${{ always() && hashFiles('product-service/target/site/jacoco/**') != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: target/site/jacoco/
+          path: product-service/target/site/jacoco/
